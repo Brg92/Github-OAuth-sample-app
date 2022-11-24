@@ -7,10 +7,10 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class RootActivity : AppCompatActivity() {
-    private val binding: ActivityRootBinding by lazy { ActivityRootBinding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val binding = ActivityRootBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
 }
