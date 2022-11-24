@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import com.example.igeniusandroidtest.databinding.FragmentLoginBinding
+import com.example.igeniusandroidtest.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -27,7 +30,8 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.webview.apply {
             webViewClient = WebViewClient()
-            loadUrl("https://github.com/login")
+            //settings.javaScriptEnabled = true
+            loadUrl(Constants.GITHUB_LOGIN_URL)
         }
     }
 

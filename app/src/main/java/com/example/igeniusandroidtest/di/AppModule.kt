@@ -2,6 +2,7 @@ package com.example.igeniusandroidtest.di
 
 import com.example.igeniusandroidtest.data.source.remote.ApiClient
 import com.example.igeniusandroidtest.data.source.remote.ApiInterface
+import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,5 +17,11 @@ object AppModule {
     @Singleton
     fun provideApiInterface(): ApiInterface {
         return ApiClient().apiInterface
+    }
+
+    @Provides
+    @Singleton
+    fun provideMoshi(): Moshi {
+        return ApiClient().moshi
     }
 }
