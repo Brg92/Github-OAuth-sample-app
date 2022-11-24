@@ -1,4 +1,4 @@
-package com.example.igeniusandroidtest.ui.login.loading
+package com.example.igeniusandroidtest.ui.loading
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.igeniusandroidtest.databinding.FragmentLoadingBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoadingFragment : Fragment() {
     private var _binding: FragmentLoadingBinding? = null
     private val binding get() = _binding!!
