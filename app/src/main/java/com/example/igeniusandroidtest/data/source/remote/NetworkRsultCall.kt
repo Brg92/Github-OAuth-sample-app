@@ -9,10 +9,10 @@ import okio.Timeout
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.awaitResponse
+import javax.inject.Inject
 
 
-class NetworkResultCall<T : Any>(
+class NetworkResultCall<T : Any> @Inject constructor(
     private val proxy: Call<T>,
     private val coroutineScope: CoroutineScope
 ) : Call<NetworkResult<T>> {
@@ -22,8 +22,7 @@ class NetworkResultCall<T : Any>(
             override fun onResponse(call: Call<T>, response: Response<T>) {
                 coroutineScope.launch {
                     try {
-                        val apiResponse = proxy.awaitResponse()
-                        val networkResult = handleApi { apiResponse }
+                        val networkResult = handleApi { response }
                         callback.onResponse(this@NetworkResultCall, Response.success(networkResult))
                     } catch (e: Exception) {
                         callback.onResponse(

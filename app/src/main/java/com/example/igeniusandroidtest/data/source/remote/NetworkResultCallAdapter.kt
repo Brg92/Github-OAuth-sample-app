@@ -5,8 +5,9 @@ import kotlinx.coroutines.CoroutineScope
 import retrofit2.Call
 import retrofit2.CallAdapter
 import java.lang.reflect.Type
+import javax.inject.Inject
 
-class NetworkResultCallAdapter(private val resultType: Type, private val coroutineScope: CoroutineScope) :
+class NetworkResultCallAdapter @Inject constructor(private val resultType: Type, private val coroutineScope: CoroutineScope) :
     CallAdapter<Type, Call<NetworkResult<Type>>> {
 
     override fun responseType(): Type = resultType

@@ -8,8 +8,9 @@ import retrofit2.CallAdapter
 import retrofit2.Retrofit
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
+import javax.inject.Inject
 
-class NetworkResultCallAdapterFactory private constructor(
+class NetworkResultCallAdapterFactory @Inject constructor(
     private val coroutineScope: CoroutineScope
 ) : CallAdapter.Factory() {
 
@@ -33,7 +34,7 @@ class NetworkResultCallAdapterFactory private constructor(
 
         @JvmStatic
         fun create(
-            coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+            coroutineScope: CoroutineScope,
         ): NetworkResultCallAdapterFactory = NetworkResultCallAdapterFactory(coroutineScope)
     }
 }

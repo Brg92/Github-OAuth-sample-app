@@ -1,5 +1,7 @@
 package com.example.igeniusandroidtest.di
 
+import com.example.igeniusandroidtest.data.repository.UserRepository
+import com.example.igeniusandroidtest.data.repository.UserRepositoryImpl
 import com.example.igeniusandroidtest.data.source.remote.ApiClient
 import com.example.igeniusandroidtest.data.source.remote.ApiInterface
 import com.squareup.moshi.Moshi
@@ -7,6 +9,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 @Module
@@ -15,13 +19,24 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideApiInterface(): ApiInterface {
-        return ApiClient().apiInterface
+    fun provideIoCoroutineScope() = CoroutineScope(Dispatchers.IO)
+
+    @Provides
+    @Singleton
+    fun provideApiInterface(coroutineScope: CoroutineScope): ApiInterface {
+        return ApiClient(coroutineScope).apiInterface
     }
 
     @Provides
     @Singleton
-    fun provideMoshi(): Moshi {
-        return ApiClient().moshi
+    fun provideMoshi(coroutineScope: CoroutineScope): Moshi {
+        return ApiClient(coroutineScope).moshi
     }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(apiInterface: ApiInterface): UserRepository {
+        return UserRepositoryImpl(apiInterface)
+    }
+
 }
