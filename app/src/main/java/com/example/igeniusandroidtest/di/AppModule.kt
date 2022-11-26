@@ -1,7 +1,5 @@
 package com.example.igeniusandroidtest.di
 
-import com.example.igeniusandroidtest.data.repository.UserRepository
-import com.example.igeniusandroidtest.data.repository.UserRepositoryImpl
 import com.example.igeniusandroidtest.data.source.remote.ApiClient
 import com.example.igeniusandroidtest.data.source.remote.ApiInterface
 import com.squareup.moshi.Moshi
@@ -31,12 +29,6 @@ object AppModule {
     @Singleton
     fun provideMoshi(coroutineScope: CoroutineScope): Moshi {
         return ApiClient(coroutineScope).moshi
-    }
-
-    @Provides
-    @Singleton
-    fun provideUserRepository(apiInterface: ApiInterface): UserRepository {
-        return UserRepositoryImpl(apiInterface)
     }
 
 }
