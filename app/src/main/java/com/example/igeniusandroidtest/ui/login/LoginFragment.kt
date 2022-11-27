@@ -9,16 +9,23 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.igeniusandroidtest.BuildConfig
 import com.example.igeniusandroidtest.R
 import com.example.igeniusandroidtest.databinding.FragmentLoginBinding
 import com.example.igeniusandroidtest.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import java.util.*
+
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
+    private val viewModel by viewModels<LoginViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,11 +39,18 @@ class LoginFragment : Fragment() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val url =
+            "${BuildConfig.BASE_URL}${BuildConfig.AUTH_ENDPOINT}?client_id=${BuildConfig.CLIENT_ID}&scope=read:user,repo&redirect_url=${BuildConfig.REDIRECT_URL}"
+
         binding.webview.apply {
             webViewClient = CustomWebViewClient()
             settings.javaScriptEnabled = true
-            loadUrl(Constants.GITHUB_LOGIN_URL)
+
+            loadUrl(url)
         }
+        subscribeApiOnSuccessEvent()
+        subscribeApiOnFailureEvent()
     }
 
     override fun onDestroyView() {
@@ -44,17 +58,49 @@ class LoginFragment : Fragment() {
         _binding = null
     }
 
+    private fun subscribeApiOnSuccessEvent() {
+        lifecycleScope.launch {
+            viewModel.onSuccessEvent.collect { event ->
+                event?.let {
+                    findNavController().navigate(R.id.to_loading)
+                }
+            }
+        }
+    }
+
+    private fun subscribeApiOnFailureEvent() {
+        lifecycleScope.launch {
+            viewModel.onFailureEvent.collect { event ->
+                event?.let {
+                    binding.webview.loadUrl(Constants.BLANK_URL)
+                }
+            }
+        }
+    }
+
     inner class CustomWebViewClient : WebViewClient() {
         override fun shouldOverrideUrlLoading(
             view: WebView?,
             request: WebResourceRequest?
         ): Boolean {
+            /*
+             This is where the user get its authorization (is logged) so it has to redirect to the Loading.
+             The user is logged if there is no path in the request url, so it has to be overridden the current url.
+             */
             val uri = request?.url ?: return super.shouldOverrideUrlLoading(view, request)
-            if (uri.path?.isNotBlank() == true) {
-                findNavController().navigate(R.id.to_loading)
-                return true
+            return if (uri.toString().startsWith(BuildConfig.REDIRECT_URL)) {
+                if (viewModel.hasAccessToken) {
+                    findNavController().navigate(R.id.to_loading)
+                    return true
+                }
+                val code = uri.getQueryParameter("code")
+                code?.let {
+                    viewModel.getAccessToken(BuildConfig.CLIENT_ID, BuildConfig.CLIENT_SECRET, it)
+                }
+                true
+            } else {
+                super.shouldOverrideUrlLoading(view, request)
             }
-            return super.shouldOverrideUrlLoading(view, request)
         }
     }
 }

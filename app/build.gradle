@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
@@ -18,7 +19,13 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "BASE_URL", '"https://api.github.com"'
+        buildConfigField "String", "BASE_URL", '"https://github.com"'
+        buildConfigField "String", "API_BASE_URL", '"https://api.github.com"'
+        buildConfigField "String", "AUTH_ENDPOINT", '"/login/oauth/authorize"'
+        buildConfigField "String", "TOKEN_ENDPOINT", '"/login/oauth/access_token"'
+        buildConfigField "String", "REDIRECT_URL", '"com.example.igeniusandroidtest://root"'
+        buildConfigField "String", "CLIENT_ID", '"fa422085c4be8de15077"'
+        buildConfigField "String", "CLIENT_SECRET", '"1a389a869f9f1c8a902fcc3b40ece39fdcaf32e9"'
     }
 
     buildTypes {
@@ -48,18 +55,20 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+    implementation 'androidx.security:security-crypto:1.0.0'
+    implementation "androidx.room:room-runtime:2.4.3"
+    kapt "androidx.room:room-compiler:2.4.3"
     implementation 'com.google.android.material:material:1.7.0'
+    implementation "com.google.dagger:hilt-android:2.44"
+    kapt "com.google.dagger:hilt-android-compiler:2.44"
     implementation 'com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.6'
     implementation 'com.squareup.moshi:moshi:1.14.0'
     kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.13.0'
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
+
     testImplementation 'junit:junit:4.13.2'
-    implementation "com.google.dagger:hilt-android:2.44"
-    kapt "com.google.dagger:hilt-android-compiler:2.44"
-    implementation "androidx.room:room-runtime:2.4.3"
-    kapt "androidx.room:room-compiler:2.4.3"
     implementation 'com.jakewharton.timber:timber:5.0.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'

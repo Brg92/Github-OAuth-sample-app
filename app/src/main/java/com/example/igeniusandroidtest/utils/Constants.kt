@@ -1,5 +1,7 @@
 package com.example.igeniusandroidtest.utils
 
 object Constants {
-    const val GITHUB_LOGIN_URL = "https://github.com/login"
+    const val BLANK_URL = "https//blank/"
+    const val NAME_ENCRYPTED_SHARED_PREFERENCES = "IGeniusAndroidTestPersistent"
+    const val ACCESS_TOKEN_KEY = "accessTokenKey"
 }
