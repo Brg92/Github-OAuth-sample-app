@@ -1,7 +1,7 @@
 package com.example.igeniusandroidtest.data.source.remote
 
+import com.example.igeniusandroidtest.data.source.local.Repository
 import com.example.igeniusandroidtest.model.AuthUser
-import com.example.igeniusandroidtest.model.Repository
 import com.example.igeniusandroidtest.utils.NetworkResult
 import retrofit2.http.*
 
