@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.igeniusandroidtest.BuildConfig
 import com.example.igeniusandroidtest.R
 import com.example.igeniusandroidtest.databinding.FragmentLoginBinding
-import com.example.igeniusandroidtest.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
@@ -72,7 +71,7 @@ class LoginFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.onFailureEvent.collect { event ->
                 event?.let {
-                    binding.webview.loadUrl(Constants.BLANK_URL)
+                    requireActivity().finish()
                 }
             }
         }

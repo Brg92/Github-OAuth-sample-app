@@ -33,7 +33,6 @@ class LoadingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getRepos()
         animateLogo()
     }
 
@@ -50,6 +49,7 @@ class LoadingFragment : Fragment() {
                     startId: Int,
                     endId: Int
                 ) {
+                    lifecycleScope.launch { viewModel.getRepositories() }
                 }
 
                 override fun onTransitionChange(
@@ -61,6 +61,7 @@ class LoadingFragment : Fragment() {
                 }
 
                 override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
+                    findNavController().navigate(R.id.homeFragment)
                     //subscribeOnReposSuccessEvent()
                     findNavController().navigate(R.id.homeFragment)
                 }
@@ -76,11 +77,5 @@ class LoadingFragment : Fragment() {
         }
     }
 
-    private fun subscribeOnReposSuccessEvent() {
-        lifecycleScope.launch {
-            viewModel.onReposSuccessEvent.collect {
-                it?.let { findNavController().navigate(R.id.go_to_home) }
-            }
-        }
-    }
+
 }

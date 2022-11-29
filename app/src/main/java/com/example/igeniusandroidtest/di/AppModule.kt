@@ -2,12 +2,14 @@ package com.example.igeniusandroidtest.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.room.Room
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.example.igeniusandroidtest.data.repository.AuthUserReposRepository
 import com.example.igeniusandroidtest.data.repository.AuthUserReposRepositoryImpl
 import com.example.igeniusandroidtest.data.repository.AuthUserRepository
 import com.example.igeniusandroidtest.data.repository.AuthUserRepositoryImpl
+import com.example.igeniusandroidtest.data.source.local.RepositoryDatabase
 import com.example.igeniusandroidtest.data.source.remote.ApiClient
 import com.example.igeniusandroidtest.data.source.remote.ApiInterface
 import com.example.igeniusandroidtest.data.source.remote.AuthInterface
@@ -39,28 +41,44 @@ object AppModule {
         return ApiClient(coroutineScope, encryptedSharedPreferences).apiInterface
     }
 
+    /*
+    * If not used, please remove it
+    * */
     @Provides
     @Singleton
-    fun provideAuthInterface(coroutineScope: CoroutineScope,encryptedSharedPreferences: SharedPreferences): AuthInterface {
-        return ApiClient(coroutineScope,encryptedSharedPreferences).authInterface
+    fun provideMoshi(coroutineScope: CoroutineScope, encryptedSharedPreferences: SharedPreferences): Moshi {
+        return ApiClient(coroutineScope, encryptedSharedPreferences).moshi
     }
 
     @Provides
     @Singleton
-    fun provideMoshi(coroutineScope: CoroutineScope,encryptedSharedPreferences: SharedPreferences): Moshi {
-        return ApiClient(coroutineScope,encryptedSharedPreferences).moshi
+    fun provideRepositoryDatabase(@ApplicationContext context: Context): RepositoryDatabase {
+        return Room.databaseBuilder(
+            context,
+            RepositoryDatabase::class.java,
+            "repository_db"
+        ).build()
     }
 
     @Provides
     @Singleton
-    fun provideAuthUserRepository(authInterface: AuthInterface,apiInterface: ApiInterface): AuthUserRepository {
-        return AuthUserRepositoryImpl(authInterface,apiInterface)
+    fun provideAuthInterface(
+        coroutineScope: CoroutineScope,
+        encryptedSharedPreferences: SharedPreferences
+    ): AuthInterface {
+        return ApiClient(coroutineScope, encryptedSharedPreferences).authInterface
     }
 
     @Provides
     @Singleton
-    fun provideAuthUserReposRepository(apiInterface: ApiInterface): AuthUserReposRepository {
-        return AuthUserReposRepositoryImpl(apiInterface)
+    fun provideAuthUserRepository(authInterface: AuthInterface, apiInterface: ApiInterface): AuthUserRepository {
+        return AuthUserRepositoryImpl(authInterface, apiInterface)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthUserReposRepository(apiInterface: ApiInterface, db: RepositoryDatabase): AuthUserReposRepository {
+        return AuthUserReposRepositoryImpl(apiInterface, db)
     }
 
     @Provides

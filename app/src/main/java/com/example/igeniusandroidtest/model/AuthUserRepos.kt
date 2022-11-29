@@ -4,9 +4,18 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class AuthUserRepos(
-    val repos: List<AuthUserReposItem>?
+    val repos: List<Repository>?
 )
 
+@JsonClass(generateAdapter = true)
+data class Repository(
+    val name: String?,
+    val description: String?,
+    val language: String?,
+    val id: Int?
+)
+
+/*
 @JsonClass(generateAdapter = true)
 data class AuthUserReposItem(
     val name: String,
