@@ -61,7 +61,8 @@ class LoadingFragment : Fragment() {
                 }
 
                 override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
-                    subscribeOnReposSuccessEvent()
+                    //subscribeOnReposSuccessEvent()
+                    findNavController().navigate(R.id.homeFragment)
                 }
 
                 override fun onTransitionTrigger(

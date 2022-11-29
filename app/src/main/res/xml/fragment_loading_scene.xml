@@ -22,5 +22,13 @@
         app:autoTransition="animateToEnd"
         app:constraintSetEnd="@id/end"
         app:constraintSetStart="@+id/start"
-        app:duration="4000"/>
+        app:duration="4000"
+        app:motionInterpolator="bounce"
+        app:pathMotionArc="flip">
+        <!--
+                <KeyFrameSet >
+
+                    <KeyPosition app:framePosition="80" app:percentY=".6"/>
+                </KeyFrameSet>-->
+    </Transition>
 </MotionScene>

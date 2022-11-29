@@ -20,7 +20,7 @@
         tools:layout="@layout/fragment_loading">
         <action
             android:id="@+id/go_to_home"
-            app:destination="@id/homeFragment" />
+            app:destination="@id/homeFragment"/>
     </fragment>
     <fragment
         android:id="@+id/homeFragment"

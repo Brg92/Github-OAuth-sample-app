@@ -9,6 +9,15 @@ data class AuthUserRepos(
 
 @JsonClass(generateAdapter = true)
 data class AuthUserReposItem(
+    val name: String,
+    val description: String,
+    val language: String,
+    val id: Int
+)
+
+/*
+@JsonClass(generateAdapter = true)
+data class AuthUserReposItem(
     val allow_auto_merge: Boolean?,
     val allow_merge_commit: Boolean?,
     val allow_rebase_merge: Boolean?,
@@ -134,4 +143,4 @@ data class Permissions(
     val admin: Boolean?,
     val pull: Boolean?,
     val push: Boolean?
-)
+)*/

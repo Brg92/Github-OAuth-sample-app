@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_default">18sp</dimen>
+    <dimen name="margin_18">18dp</dimen>
+    <dimen name="padding_16">16dp</dimen>
+    <dimen name="padding_32">32dp</dimen>
+
+    <dimen name="bg_card_image_repository_height">120dp</dimen>
+    <dimen name="bg_card_image_repository_bottom_corner">16dp</dimen>
+    <dimen name="card_repository_elevation">1dp</dimen>
+</resources>
