@@ -17,8 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoadingViewModel @Inject constructor(private val authUserReposRepository: AuthUserReposRepository) : ViewModel() {
 
-    private val _apiSuccessEvent = MutableSharedFlow<Unit>()
-    val apiSuccessEvent get() = _apiSuccessEvent.asSharedFlow()
+    private val _repositoriesSuccessEvent = MutableSharedFlow<Unit>()
+    val apiSuccessEvent get() = _repositoriesSuccessEvent.asSharedFlow()
 
     fun getRepositories() {
         viewModelScope.launch {
@@ -26,15 +26,11 @@ class LoadingViewModel @Inject constructor(private val authUserReposRepository: 
             authUserReposRepository.getRepositories().collect { result ->
                 result.onSuccess {
                     Timber.d("list $it")
-                    _apiSuccessEvent.emit(Unit)
-                }.onError { _, message ->
-                    Timber.d("error message: $message")
-                }.onException {
-                    Timber.d("exception ${it.message}")
+                    _repositoriesSuccessEvent.emit(Unit)
                 }
+                    .onError { _, message -> Timber.d("error message: $message") }
+                    .onException { Timber.d("exception ${it.message}") }
             }
         }
     }
-
-
 }

@@ -1,24 +1,31 @@
 package com.example.igeniusandroidtest.ui.home
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.igeniusandroidtest.data.repository.AuthUserReposRepository
-import com.example.igeniusandroidtest.data.source.local.Repository
+import com.example.igeniusandroidtest.utils.onLoading
+import com.example.igeniusandroidtest.utils.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
-import timber.log.Timber
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val authUserReposRepository: AuthUserReposRepository) :
     ViewModel() {
 
-    val repositories: LiveData<List<Repository>?> = authUserReposRepository.repositories.asLiveData()
+    private val _repositories = authUserReposRepository.repositories
+    val repositories get() = _repositories.asLiveData()
 
-    init {
-        Timber.d("home ${repositories.value}")
+    fun fetchRepositories() {
+        viewModelScope.launch {
+            authUserReposRepository.getRepositories().collect { result ->
+                result.onSuccess { repos ->
+                    _repositories.emit(repos)
+                }.onLoading {
+                    // TODO handle progress
+                }
+            }
+        }
     }
 }

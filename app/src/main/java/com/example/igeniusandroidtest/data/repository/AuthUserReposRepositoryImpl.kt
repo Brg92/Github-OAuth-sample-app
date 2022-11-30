@@ -9,7 +9,6 @@ import com.example.igeniusandroidtest.data.source.remote.ApiInterface
 import com.example.igeniusandroidtest.utils.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 import javax.inject.Inject
 
