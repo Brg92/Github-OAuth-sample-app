@@ -8,6 +8,8 @@ import com.example.igeniusandroidtest.data.source.local.RepositoryDatabase
 import com.example.igeniusandroidtest.data.source.remote.ApiInterface
 import com.example.igeniusandroidtest.utils.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -28,6 +30,8 @@ class AuthUserReposRepositoryImpl @Inject constructor(
         db.dao.deleteRepository(repository)
     }
 
+    override val repositories = MutableStateFlow<List<Repository>?>(null)
+
     override fun getRepositories(): Flow<NetworkResult<List<Repository>>> {
         return networkBoundResource(
             query = { db.dao.getRepositories() },
@@ -35,6 +39,7 @@ class AuthUserReposRepositoryImpl @Inject constructor(
             saveFetchResult = { result ->
                 db.withTransaction {
                     result.onSuccess { repos ->
+                        repositories.emit(repos)
                         db.dao.deleteAllRepositories()
                         db.dao.insertRepositories(repos)
                     }.onError { code, message ->

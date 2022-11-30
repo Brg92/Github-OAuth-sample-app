@@ -33,7 +33,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="4"
-            android:padding="@dimen/padding_32"
+            android:paddingHorizontal="@dimen/padding_32"
+            android:paddingVertical="@dimen/padding_16"
             android:text="placeholder" />
 
         <TextView
