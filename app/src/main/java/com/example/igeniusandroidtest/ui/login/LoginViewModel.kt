@@ -28,9 +28,7 @@ class LoginViewModel @Inject constructor(
     private val _onFailureEvent = MutableStateFlow<String?>(null)
     val onFailureEvent = _onFailureEvent.asSharedFlow()
     val hasAccessToken
-        get() =
-            encryptedSharedPreferences.getString(Constants.ACCESS_TOKEN_KEY, null)
-                ?.isNotEmpty() != null
+        get() = encryptedSharedPreferences.getString(Constants.ACCESS_TOKEN_KEY, null)?.isNotEmpty() != null
 
     fun getAccessToken(
         client_id: String,

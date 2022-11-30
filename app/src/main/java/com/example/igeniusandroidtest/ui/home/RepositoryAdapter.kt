@@ -3,12 +3,12 @@ package com.example.igeniusandroidtest.ui.home
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.igeniusandroidtest.data.source.local.Repository
 import com.example.igeniusandroidtest.databinding.RepositoryItemAdapterBinding
-import com.example.igeniusandroidtest.model.AuthUserReposItem
 
 class RepositoryAdapter(
-    private val repositories: List<AuthUserReposItem>,
-    private val onCardRepositoryClick: (AuthUserReposItem) -> Unit
+    private val repositories: List<Repository>,
+    private val onCardRepositoryClick: (Repository) -> Unit
 ) :
     RecyclerView.Adapter<RepositoryAdapter.RepositoryViewHolder>() {
 
@@ -18,7 +18,7 @@ class RepositoryAdapter(
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun setData(repository: AuthUserReposItem) = with(binding) {
+        fun setData(repository: Repository) = with(binding) {
             //imageCardRepositoryBg
             textViewUsername.text = repository.name
             textViewDescription.text = repository.description

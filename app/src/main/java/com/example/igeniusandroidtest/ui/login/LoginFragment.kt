@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -15,10 +17,11 @@ import androidx.navigation.fragment.findNavController
 import com.example.igeniusandroidtest.BuildConfig
 import com.example.igeniusandroidtest.R
 import com.example.igeniusandroidtest.databinding.FragmentLoginBinding
+import com.example.igeniusandroidtest.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
-
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -45,7 +48,6 @@ class LoginFragment : Fragment() {
         binding.webview.apply {
             webViewClient = CustomWebViewClient()
             settings.javaScriptEnabled = true
-
             loadUrl(url)
         }
         subscribeApiOnSuccessEvent()
@@ -59,11 +61,7 @@ class LoginFragment : Fragment() {
 
     private fun subscribeApiOnSuccessEvent() {
         lifecycleScope.launch {
-            viewModel.onSuccessEvent.collect { event ->
-                event?.let {
-                    findNavController().navigate(R.id.to_loading)
-                }
-            }
+            viewModel.onSuccessEvent.collect { event -> event?.let { findNavController().navigate(R.id.to_loading) } }
         }
     }
 
@@ -71,6 +69,8 @@ class LoginFragment : Fragment() {
         lifecycleScope.launch {
             viewModel.onFailureEvent.collect { event ->
                 event?.let {
+                    Toast.makeText(requireActivity(), "Api failure. It needs token to access.", Toast.LENGTH_SHORT)
+                        .show()
                     requireActivity().finish()
                 }
             }
@@ -87,6 +87,7 @@ class LoginFragment : Fragment() {
              The user is logged if there is no path in the request url, so it has to be overridden the current url.
              */
             val uri = request?.url ?: return super.shouldOverrideUrlLoading(view, request)
+            Timber.d("url $uri")
             return if (uri.toString().startsWith(BuildConfig.REDIRECT_URL)) {
                 if (viewModel.hasAccessToken) {
                     findNavController().navigate(R.id.to_loading)
@@ -100,6 +101,15 @@ class LoginFragment : Fragment() {
             } else {
                 super.shouldOverrideUrlLoading(view, request)
             }
+        }
+
+        override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+            super.onReceivedError(view, request, error)
+            /*
+            * The way to start offline-app.
+            * */
+            if (error?.errorCode == Constants.ERR_INTERNET_DISCONNECTED && viewModel.hasAccessToken)
+                findNavController().navigate(R.id.to_loading)
         }
     }
 }

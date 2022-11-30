@@ -1,5 +1,7 @@
 package com.example.igeniusandroidtest.data.repository
 
+import android.content.Context
+import android.widget.Toast
 import androidx.room.withTransaction
 import com.example.igeniusandroidtest.data.source.local.Repository
 import com.example.igeniusandroidtest.data.source.local.RepositoryDatabase
@@ -10,10 +12,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class AuthUserReposRepositoryImpl @Inject constructor(
-    private val apiInterface: ApiInterface,
-    private val db: RepositoryDatabase
-) :
-    AuthUserReposRepository {
+    private val context: Context,
+    private val apiInterface: ApiInterface, private val db: RepositoryDatabase
+) : AuthUserReposRepository {
 
     override suspend fun insertRepository(repository: Repository) {
         db.dao.insertRepository(repository)
@@ -33,20 +34,16 @@ class AuthUserReposRepositoryImpl @Inject constructor(
             fetch = { apiInterface.getRepos() },
             saveFetchResult = { result ->
                 db.withTransaction {
-                    result.onSuccess { repositories ->
+                    result.onSuccess { repos ->
                         db.dao.deleteAllRepositories()
-                        val repos = repositories.map { repo ->
-                            Repository(
-                                name = repo.name,
-                                description = repo.description,
-                                language = repo.language.toString(),
-                                id = repo.id
-                            )
-                        }
                         db.dao.insertRepositories(repos)
-                    }
-                        .onError { code, message -> Timber.e("error: code $code message $message") }
-                        .onException { Timber.e(it.message) }
+                    }.onError { code, message ->
+                        Toast.makeText(
+                            context,
+                            "Error code: $code, message: $message",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }.onException { Timber.e(it.message) }
                 }
             }
         )

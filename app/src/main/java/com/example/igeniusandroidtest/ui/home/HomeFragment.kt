@@ -39,8 +39,10 @@ class HomeFragment : Fragment() {
 
     private fun subscribeRepositories() {
         viewModel.repositories.observe(viewLifecycleOwner) { repos ->
-            binding.recyclerViewRepos.adapter = RepositoryAdapter(repos) { _ ->
-                findNavController().navigate(R.id.detailedFragment)
+            repos?.let {
+                binding.recyclerViewRepos.adapter = RepositoryAdapter(it) { _ ->
+                    findNavController().navigate(R.id.detailedFragment)
+                }
             }
         }
     }

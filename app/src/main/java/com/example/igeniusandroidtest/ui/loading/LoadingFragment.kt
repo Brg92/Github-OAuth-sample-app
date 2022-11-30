@@ -7,19 +7,15 @@ import android.view.ViewGroup
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.motion.widget.MotionLayout.TransitionListener
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.igeniusandroidtest.R
 import com.example.igeniusandroidtest.databinding.FragmentLoadingBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoadingFragment : Fragment() {
     private var _binding: FragmentLoadingBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModels<LoadingViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,13 +40,7 @@ class LoadingFragment : Fragment() {
     private fun animateLogo() {
         binding.motionLayout.apply {
             setTransitionListener(object : TransitionListener {
-                override fun onTransitionStarted(
-                    motionLayout: MotionLayout?,
-                    startId: Int,
-                    endId: Int
-                ) {
-                    lifecycleScope.launch { viewModel.getRepositories() }
-                }
+                override fun onTransitionStarted(motionLayout: MotionLayout?, startId: Int, endId: Int) {}
 
                 override fun onTransitionChange(
                     motionLayout: MotionLayout?,
@@ -61,8 +51,6 @@ class LoadingFragment : Fragment() {
                 }
 
                 override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
-                    findNavController().navigate(R.id.homeFragment)
-                    //subscribeOnReposSuccessEvent()
                     findNavController().navigate(R.id.homeFragment)
                 }
 
@@ -76,6 +64,4 @@ class LoadingFragment : Fragment() {
             })
         }
     }
-
-
 }
