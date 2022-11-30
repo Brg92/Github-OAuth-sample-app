@@ -22,7 +22,7 @@ class LoadingViewModel @Inject constructor(private val authUserReposRepository: 
 
     fun getRepositories() {
         viewModelScope.launch {
-            delay(2000)
+            delay(1000)
             authUserReposRepository.getRepositories().collect { result ->
                 result.onSuccess {
                     Timber.d("list $it")

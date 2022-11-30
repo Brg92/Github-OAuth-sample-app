@@ -3,6 +3,7 @@ package com.example.igeniusandroidtest.ui.home
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.igeniusandroidtest.data.source.local.Repository
 import com.example.igeniusandroidtest.databinding.RepositoryItemAdapterBinding
 
@@ -19,10 +20,10 @@ class RepositoryAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun setData(repository: Repository) = with(binding) {
-            //imageCardRepositoryBg
+            Glide.with(itemView.context).load(repository.owner?.avatar_url).into(imageCardRepository)
             textViewUsername.text = repository.name
             textViewDescription.text = repository.description
-            textViewLanguage.text = repository.language.toString()
+            textViewLanguage.text = repository.language?.toString()
             itemView.setOnClickListener { onCardRepositoryClick(adapterPosition) }
         }
     }

@@ -5,6 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <FrameLayout
+        android:id="@+id/header_home_bg"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:background="@drawable/header_home_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/image_view_github_header"
         android:layout_width="100dp"
@@ -28,6 +37,17 @@
         app:layout_constraintTop_toBottomOf="@+id/image_view_github_header"
         tools:itemCount="4"
         tools:listitem="@layout/repository_item_adapter" />
+
+    <ProgressBar
+        android:id="@+id/progress_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/recycler_view_repos"
+        app:layout_constraintEnd_toEndOf="@+id/recycler_view_repos"
+        app:layout_constraintStart_toStartOf="@+id/recycler_view_repos"
+        app:layout_constraintTop_toTopOf="@+id/recycler_view_repos"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -4,47 +4,75 @@
     android:id="@+id/card_repository"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/margin_18"
-    app:cardElevation="@dimen/card_repository_elevation">
+    android:layout_margin="18dp"
+    app:cardElevation="1dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/card_repository_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/image_card_repository_bg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/bg_card_image_repository" />
+            android:id="@+id/image_card_repository"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/card_repository_image_container"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/bg_card_image_repository"
+            app:layout_constraintBottom_toBottomOf="@+id/image_card_repository"
+            app:layout_constraintEnd_toEndOf="@+id/image_card_repository"
+            app:layout_constraintStart_toStartOf="@+id/image_card_repository"
+            app:layout_constraintTop_toTopOf="@+id/image_card_repository" />
+
+
 
         <TextView
             android:id="@+id/text_view_username"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="-40dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:padding="@dimen/padding_16"
-            android:text="placeholder" />
+            android:text="placeholder"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_card_repository" />
 
         <TextView
             android:id="@+id/text_view_description"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="30dp"
             android:ellipsize="end"
             android:maxLines="4"
-            android:paddingHorizontal="@dimen/padding_32"
-            android:paddingVertical="@dimen/padding_16"
-            android:text="placeholder" />
+            android:text="placeholder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/text_view_username"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_username" />
 
         <TextView
             android:id="@+id/text_view_language"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="24dp"
             android:ellipsize="end"
-            android:gravity="end"
             android:maxLines="1"
-            android:padding="@dimen/padding_16"
-            android:text="placeholder" />
-    </LinearLayout>
+            android:text="placeholder"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/text_view_description"
+            app:layout_constraintStart_toStartOf="@+id/text_view_description"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_description" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

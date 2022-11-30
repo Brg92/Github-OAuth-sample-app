@@ -3,9 +3,6 @@
     android:shape="rectangle">
     <corners
         android:bottomLeftRadius="12dp"
-        android:bottomRightRadius="12dp"
-        android:topRightRadius="12dp" />
-    <stroke
-        android:width="10dp"
-        android:color="#313033" />
+        android:bottomRightRadius="12dp" />
+    <solid android:color="#313033" />
 </shape>

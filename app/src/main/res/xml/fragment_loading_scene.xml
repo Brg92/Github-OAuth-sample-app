@@ -11,8 +11,8 @@
             android:id="@id/image_view_github_logo"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:scaleX=".5"
-            android:scaleY=".5"
+            android:scaleX=".6"
+            android:scaleY=".6"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -25,10 +25,5 @@
         app:duration="4000"
         app:motionInterpolator="bounce"
         app:pathMotionArc="flip">
-        <!--
-                <KeyFrameSet >
-
-                    <KeyPosition app:framePosition="80" app:percentY=".6"/>
-                </KeyFrameSet>-->
     </Transition>
 </MotionScene>
