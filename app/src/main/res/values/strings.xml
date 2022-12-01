@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">IGenius Android Test</string>
+
+    <!-- Detailed screen -->
+    <string name="name_label">Title</string>
+    <string name="descritption_label">Description</string>
+    <string name="language_label">Language</string>
+    <string name="id_label">Id</string>
 </resources>

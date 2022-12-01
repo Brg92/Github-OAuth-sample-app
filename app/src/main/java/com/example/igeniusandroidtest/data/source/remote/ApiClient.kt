@@ -10,6 +10,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ApiClient @Inject constructor(
@@ -37,9 +38,7 @@ class ApiClient @Inject constructor(
                 chain.proceed(
                     chain.request().newBuilder().apply {
                         addHeader("Accept", "application/vnd.github+json")
-                        accessToken?.let { token ->
-                            addHeader("Authorization", token)
-                        }
+                        accessToken?.let { token -> addHeader("Authorization", token) }
                     }.build()
                 )
             })
