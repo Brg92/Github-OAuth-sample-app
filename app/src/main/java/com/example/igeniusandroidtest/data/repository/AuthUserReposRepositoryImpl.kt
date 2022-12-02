@@ -30,7 +30,7 @@ class AuthUserReposRepositoryImpl @Inject constructor(
         db.dao.deleteRepository(repository)
     }
 
-    override val repositories = MutableStateFlow<List<Repository>?>(null)
+    override val repositories = MutableStateFlow<List<Repository>>(emptyList())
 
     override fun getRepositories(): Flow<NetworkResult<List<Repository>>> {
         return networkBoundResource(
@@ -59,7 +59,7 @@ class AuthUserReposRepositoryImpl @Inject constructor(
     }
 
     override suspend fun checkStarredRepository(ownerName: String, nameRepository: String): Response<Unit> {
-       return apiInterface.checkStarredRepository(ownerName,nameRepository)
+        return apiInterface.checkStarredRepository(ownerName, nameRepository)
     }
 
     override suspend fun starRepository(nameOwner: String, nameRepository: String): Response<Unit> {

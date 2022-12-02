@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.motion.widget.MotionLayout.TransitionListener
 import androidx.fragment.app.Fragment
@@ -13,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.igeniusandroidtest.R
 import com.example.igeniusandroidtest.databinding.FragmentLoadingBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -34,7 +36,8 @@ class LoadingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         animateLogo()
-        subscribeApiSuccessEvent()
+        consumeApiSuccessEvent()
+        consumeApiErrorEvent()
     }
 
     override fun onDestroyView() {
@@ -70,11 +73,15 @@ class LoadingFragment : Fragment() {
         }
     }
 
-    private fun subscribeApiSuccessEvent() {
+    private fun consumeApiSuccessEvent() =
+        lifecycleScope.launch { viewModel.onSuccessEvent.collect { findNavController().navigate(R.id.homeFragment) } }
+
+    private fun consumeApiErrorEvent() =
         lifecycleScope.launch {
-            viewModel.apiSuccessEvent.collect {
+            viewModel.onErrorEvent.collect { msg ->
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                delay(1000L)
                 findNavController().navigate(R.id.homeFragment)
             }
         }
-    }
 }

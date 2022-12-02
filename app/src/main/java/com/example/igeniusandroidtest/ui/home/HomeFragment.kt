@@ -11,8 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.igeniusandroidtest.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -32,8 +30,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        subscribeOnLoadingEvent()
-        subscribeRepositories()
+        consumeUiState()
 
     }
 
@@ -42,23 +39,18 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    private fun subscribeOnLoadingEvent() {
-        lifecycleScope.launch {
-            viewModel.onLoadingEvent.collect {
-                binding.progressLoading.isVisible = true
+    private fun consumeUiState() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.produceHomeUiState.collect { homeUiState ->
+                bindData(homeUiState)
             }
         }
     }
 
-    private fun subscribeRepositories() {
-        viewModel.repositories.observe(viewLifecycleOwner) { repos ->
-            binding.progressLoading.isVisible = false
-            repos?.let {
-                binding.recyclerViewRepos.adapter = RepositoryAdapter(it) { repository ->
-                    Timber.d("home get id ${repository.id}")
-                    findNavController().navigate(HomeFragmentDirections.goToDetail(repository.id ?: -1))
-                }
-            } ?: viewModel.fetchRepositories()
+    private fun bindData(homeUiState: HomeUiState) = with(binding) {
+        progressLoading.isVisible = homeUiState.isLoading
+        recyclerViewRepos.adapter = RepositoryAdapter(homeUiState.cards) { repo ->
+            findNavController().navigate(HomeFragmentDirections.goToDetail(repo.id ?: -1))
         }
     }
 }
