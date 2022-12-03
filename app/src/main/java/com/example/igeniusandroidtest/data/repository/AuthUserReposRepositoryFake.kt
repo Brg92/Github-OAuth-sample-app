@@ -5,7 +5,6 @@ import com.example.igeniusandroidtest.utils.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 
 class AuthUserReposRepositoryFake : AuthUserReposRepository {
@@ -18,9 +17,9 @@ class AuthUserReposRepositoryFake : AuthUserReposRepository {
         SUCCESS_POSITIVE(204), SUCCESS_NEGATIVE(304), ERROR_REQ_AUTH(401), ERR_FORB(403), ERR_RES_NOT_FOUND(404)
     }
 
-    val repositoryItemsFromServer = mutableListOf<Repository>()
-    private val repositoryItemsFromDatabase = mutableListOf<Repository>()
-    private val asyncRepositoryItemsDb: Flow<List<Repository>> = MutableStateFlow(repositoryItemsFromDatabase)
+    val repositoryItemsSourceRemote = mutableListOf<Repository>()
+    private val repositoryItemsSourceDatabase = mutableListOf<Repository>()
+    private val asyncRepositoryItemsDb: Flow<List<Repository>> = MutableStateFlow(repositoryItemsSourceDatabase)
     private var networkResult: NetworkResultFake = NetworkResultFake.SUCCESS
     private var result = Result.SUCCESS_POSITIVE
 
@@ -35,7 +34,7 @@ class AuthUserReposRepositoryFake : AuthUserReposRepository {
     private suspend fun networkApiFakeReturnResult(): NetworkResult<List<Repository>> {
         delay(1000)
         return when (networkResult) {
-            NetworkResultFake.SUCCESS -> NetworkResult.Success(repositoryItemsFromServer)
+            NetworkResultFake.SUCCESS -> NetworkResult.Success(repositoryItemsSourceRemote)
             NetworkResultFake.ERROR -> NetworkResult.Error(-1, "Generic Error Api")
             NetworkResultFake.EXCEPTION -> NetworkResult.Exception(Throwable("Generic Exception"))
             NetworkResultFake.LOADING -> NetworkResult.Loading()
@@ -45,26 +44,26 @@ class AuthUserReposRepositoryFake : AuthUserReposRepository {
     private suspend fun networkApiFakeReturnResponse(): Response<Unit> {
         delay(1000)
         return when (result) {
-            Result.SUCCESS_POSITIVE -> Response.success(result.code,Unit)
-            Result.SUCCESS_NEGATIVE ->  Response.success(result.code,Unit)
-            Result.ERROR_REQ_AUTH ->  Response.success(result.code,Unit)
-            Result.ERR_FORB ->  Response.success(result.code,Unit)
-            Result.ERR_RES_NOT_FOUND ->  Response.success(result.code,Unit)
+            Result.SUCCESS_POSITIVE -> Response.success(result.code, Unit)
+            Result.SUCCESS_NEGATIVE -> Response.success(result.code, Unit)
+            Result.ERROR_REQ_AUTH -> Response.success(result.code, Unit)
+            Result.ERR_FORB -> Response.success(result.code, Unit)
+            Result.ERR_RES_NOT_FOUND -> Response.success(result.code, Unit)
         }
     }
 
-    override val repositories: MutableStateFlow<List<Repository>> = MutableStateFlow(repositoryItemsFromServer)
+    override val repositories: MutableStateFlow<List<Repository>> = MutableStateFlow(emptyList())
 
     override suspend fun insertRepository(repository: Repository) {
-        repositoryItemsFromDatabase.add(repository)
+        repositoryItemsSourceDatabase.add(repository)
     }
 
     override suspend fun deleteAllRepositories() {
-        repositoryItemsFromDatabase.clear()
+        repositoryItemsSourceDatabase.clear()
     }
 
     override suspend fun deleteRepository(repository: Repository) {
-        repositoryItemsFromDatabase.remove(repository)
+        repositoryItemsSourceDatabase.remove(repository)
     }
 
     override fun getRepositories(): Flow<NetworkResult<List<Repository>>> {
@@ -75,17 +74,17 @@ class AuthUserReposRepositoryFake : AuthUserReposRepository {
                 result
                     .onSuccess { repos ->
                         repositories.emit(repos)
-                        repositoryItemsFromDatabase.clear()
-                        repositoryItemsFromDatabase.addAll(repos)
+                        repositoryItemsSourceDatabase.clear()
+                        repositoryItemsSourceDatabase.addAll(repos)
                     }
-                    .onError { code, message -> }
-                    .onException { t -> }
+                    .onError { _, _ -> }
+                    .onException { _ -> }
             }
         )
     }
 
     override suspend fun getRepositoryById(id: Int): Repository {
-        return repositoryItemsFromDatabase.first { it.id == id }
+        return repositoryItemsSourceDatabase.first { it.id == id }
     }
 
     override suspend fun checkStarredRepository(

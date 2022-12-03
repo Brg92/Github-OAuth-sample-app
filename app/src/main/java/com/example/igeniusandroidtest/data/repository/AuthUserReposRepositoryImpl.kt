@@ -58,7 +58,10 @@ class AuthUserReposRepositoryImpl @Inject constructor(
         return db.dao.getRepositoryById(id)
     }
 
-    override suspend fun checkStarredRepository(ownerName: String, nameRepository: String): Response<Unit> {
+    override suspend fun checkStarredRepository(
+        ownerName: String,
+        nameRepository: String
+    ): Response<Unit> {
         return apiInterface.checkStarredRepository(ownerName, nameRepository)
     }
 
