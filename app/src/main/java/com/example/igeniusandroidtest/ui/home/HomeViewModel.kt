@@ -30,6 +30,10 @@ class HomeViewModel @Inject constructor(private val authUserReposRepository: Aut
         .stateIn(viewModelScope, SharingStarted.Eagerly, _produceHomeUiState.value)
 
     init {
+        /*
+        * The fetch is triggered if there is no connection, so the pre-load repositories are not available and it is required
+        * access the cached repositories.
+        * */
         viewModelScope.launch {
             if (_repositories.value.cards.isNotEmpty())
                 _produceHomeUiState.emit(_repositories.value)

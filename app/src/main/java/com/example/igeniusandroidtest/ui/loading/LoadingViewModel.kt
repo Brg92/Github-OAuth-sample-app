@@ -20,6 +20,9 @@ class LoadingViewModel @Inject constructor(private val authUserReposRepository: 
     private val _onErrorEvent = Channel<String>()
     val onErrorEvent = _onErrorEvent.receiveAsFlow()
 
+    /*
+    * The idea behind this api triggered here, it is to pre-load repositories to show faster landing on the home.
+    * */
     fun getRepositories() {
         viewModelScope.launch {
             delay(1000)

@@ -16,6 +16,6 @@ interface AuthUserReposRepository {
     fun getRepositories(): Flow<NetworkResult<List<Repository>>>
     suspend fun getRepositoryById(id: Int): Repository
     suspend fun checkStarredRepository(ownerName: String, nameRepository: String): Response<Unit>
-    suspend fun starRepository(ownerName: String, nameRepository: String): Response<Unit>
-    suspend fun unstarRepository(ownerName: String, nameRepository: String): Response<Unit>
+    suspend fun starRepository(ownerName: String, nameRepository: String):Response<Unit>
+    suspend fun unstarRepository(ownerName: String, nameRepository: String):Response<Unit>
 }
