@@ -26,7 +26,7 @@ class DetailedViewModel @Inject constructor(
 
     fun checkStarredRepository(userName: String, repositoryName: String) {
         viewModelScope.launch {
-            val code = authUserReposRepository.checkStarredRepository(userName, repositoryName).getOrDefault(-1)
+            val code = authUserReposRepository.checkStarredRepository(userName, repositoryName).code()
             NetworkResultSuccessHelper(code) { isSuccess -> _isStarred.value = isSuccess }()
         }
     }
@@ -39,14 +39,14 @@ class DetailedViewModel @Inject constructor(
 
     private fun starApi(userName: String, repositoryName: String) {
         viewModelScope.launch {
-            val code = authUserReposRepository.starRepository(userName, repositoryName).getOrDefault(-1)
+            val code = authUserReposRepository.starRepository(userName, repositoryName).code()
             NetworkResultSuccessHelper(code) { isSuccess -> _isStarred.value = isSuccess }()
         }
     }
 
     private fun unstarApi(userName: String, repositoryName: String) {
         viewModelScope.launch {
-            val code = authUserReposRepository.unstarRepository(userName, repositoryName).getOrDefault(-1)
+            val code = authUserReposRepository.unstarRepository(userName, repositoryName).code()
             NetworkResultSuccessHelper(code) { isSuccess -> _isStarred.value = !isSuccess }()
         }
     }

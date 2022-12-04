@@ -56,15 +56,15 @@ class AuthUserReposRepositoryImpl @Inject constructor(
     override suspend fun checkStarredRepository(
         ownerName: String,
         nameRepository: String
-    ): Result<Int> {
+    ): Response<Unit> {
         return apiInterface.checkStarredRepository(ownerName, nameRepository)
     }
 
-    override suspend fun starRepository(nameOwner: String, nameRepository: String): Result<Int> {
+    override suspend fun starRepository(nameOwner: String, nameRepository: String): Response<Unit> {
         return apiInterface.starRepository(nameOwner, nameRepository)
     }
 
-    override suspend fun unstarRepository(nameOwner: String, nameRepository: String): Result<Int> {
+    override suspend fun unstarRepository(nameOwner: String, nameRepository: String): Response<Unit> {
         return apiInterface.unstarRepository(nameOwner, nameRepository)
     }
 }

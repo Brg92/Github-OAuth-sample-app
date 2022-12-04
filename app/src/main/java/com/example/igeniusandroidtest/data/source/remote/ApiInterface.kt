@@ -21,20 +21,20 @@ interface ApiInterface {
     suspend fun checkStarredRepository(
         @Path("owner") nameOwner: String,
         @Path("repo") nameRepository: String
-    ): Result<Int>
+    ): Response<Unit>
 
     @Headers("Content-Length: 0")
     @PUT("/user/starred/{owner}/{repo}")
     suspend fun starRepository(
         @Path("owner") nameOwner: String,
         @Path("repo") nameRepository: String
-    ): Result<Int>
+    ): Response<Unit>
 
     @Headers("Content-Length: 0")
     @DELETE("/user/starred/{owner}/{repo}")
     suspend fun unstarRepository(
         @Path("owner") nameOwner: String,
         @Path("repo") nameRepository: String
-    ): Result<Int>
+    ): Response<Unit>
 
 }

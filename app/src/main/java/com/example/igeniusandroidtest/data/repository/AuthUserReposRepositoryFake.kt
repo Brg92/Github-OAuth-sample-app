@@ -5,6 +5,7 @@ import com.example.igeniusandroidtest.utils.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import retrofit2.Response
 
 class AuthUserReposRepositoryFake : AuthUserReposRepository {
 
@@ -44,18 +45,17 @@ class AuthUserReposRepositoryFake : AuthUserReposRepository {
         ownerName: String,
         nameRepository: String,
         swap: Boolean? = null
-    ): Result<Int> {
-        val repo = repositories.value.find { it.name == nameRepository && it.owner?.login == ownerName }
-        if (swap == true) return Result.success(ResultFake.SUCCESS_POSITIVE.code)
+    ): Response<Unit> {
+        val hasUser = repositories.value.find { it.name == nameRepository && it.owner?.login == ownerName } != null
         delay(1000)
-        return repo?.let {
-            when (result) {
-                ResultFake.SUCCESS_POSITIVE -> Result.success(result.code)
-                ResultFake.SUCCESS_NEGATIVE -> Result.success(result.code)
-                ResultFake.ERR_FORB -> Result.success(result.code)
-                ResultFake.ERR_RES_NOT_FOUND -> Result.success(result.code)
-            }
-        } ?: Result.success(401)
+        if (swap == true) return Response.success(ResultFake.SUCCESS_POSITIVE.code, Unit)
+        if (!hasUser) return Response.success(401, Unit)
+        return when (result) {
+            ResultFake.SUCCESS_POSITIVE -> Response.success(result.code, Unit)
+            ResultFake.SUCCESS_NEGATIVE -> Response.success(result.code, Unit)
+            ResultFake.ERR_FORB -> Response.success(result.code, Unit)
+            ResultFake.ERR_RES_NOT_FOUND -> Response.success(result.code, Unit)
+        }
     }
 
     override val repositories: MutableStateFlow<List<Repository>> = MutableStateFlow(emptyList())
@@ -96,15 +96,15 @@ class AuthUserReposRepositoryFake : AuthUserReposRepository {
     override suspend fun checkStarredRepository(
         ownerName: String,
         nameRepository: String
-    ): Result<Int> {
+    ): Response<Unit> {
         return networkApiFakeReturnResponse(ownerName, nameRepository)
     }
 
-    override suspend fun starRepository(ownerName: String, nameRepository: String): Result<Int> {
+    override suspend fun starRepository(ownerName: String, nameRepository: String): Response<Unit> {
         return networkApiFakeReturnResponse(ownerName, nameRepository, true)
     }
 
-    override suspend fun unstarRepository(ownerName: String, nameRepository: String): Result<Int> {
+    override suspend fun unstarRepository(ownerName: String, nameRepository: String): Response<Unit> {
         return networkApiFakeReturnResponse(ownerName, nameRepository)
     }
 }
