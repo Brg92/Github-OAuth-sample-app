@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.Flow
 interface RepositoryDao {
 
     /*
-  * thanks to replace conflict strategy, insert and update operations at the same time (use same id).
-  * */
+    * thanks to replace conflict strategy, insert and update operations at the same time (use same id).
+    * */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRepositories(repositories: List<Repository>)
 
