@@ -42,19 +42,19 @@ class HomeViewModel @Inject constructor(private val authUserReposRepository: Aut
         }
     }
 
-     private fun fetchRepositories() {
+    private fun fetchRepositories() {
         viewModelScope.launch {
             authUserReposRepository.getRepositories().collect { networkResult ->
-                networkResult.onSuccess { repos -> _produceHomeUiState.update { it.copy(cards = repos, isLoading = false) } }
-                networkResult.onLoading { _produceHomeUiState.update { it.copy(isLoading = true) } }
-                networkResult.onError { code, message ->
-                    _produceHomeUiState.update {
-                        it.copy(
-                            isLoading = false,
-                            error = "error code: $code, message: $message"
-                        )
+                networkResult
+                    .onLoading { _produceHomeUiState.update { it.copy(isLoading = true) } }
+                    .onSuccess { repos ->
+                        _produceHomeUiState.update {
+                            it.copy(
+                                cards = repos,
+                                isLoading = false
+                            )
+                        }
                     }
-                }
             }
         }
     }

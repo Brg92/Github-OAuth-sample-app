@@ -6,7 +6,6 @@ import com.example.igeniusandroidtest.data.repository.AuthUserReposRepositoryFak
 import com.example.igeniusandroidtest.data.source.local.Repository
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
 import org.junit.*
@@ -14,14 +13,9 @@ import org.junit.*
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
 
-    // Executes each task synchronously using Architecture Components.
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
-    /*
-     * Rule for setting the main Dispatcher in order to test viewModel coroutines launched in viewModelScope over
-     * the Ui(Main) thread which is by default running on Android device and no available here.
-     * */
     @get:Rule
     var mainDispatcherTestRule = MainDispatcherTestRule()
 

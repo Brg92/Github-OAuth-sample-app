@@ -78,11 +78,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAuthUserReposRepository(
-        @ApplicationContext context: Context,
         apiInterface: ApiInterface,
         db: RepositoryDatabase
     ): AuthUserReposRepository {
-        return AuthUserReposRepositoryImpl(context, apiInterface, db)
+        return AuthUserReposRepositoryImpl(apiInterface, db)
     }
 
     @Provides

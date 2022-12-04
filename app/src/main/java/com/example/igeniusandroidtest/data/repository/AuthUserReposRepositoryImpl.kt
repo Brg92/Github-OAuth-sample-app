@@ -1,7 +1,5 @@
 package com.example.igeniusandroidtest.data.repository
 
-import android.content.Context
-import android.widget.Toast
 import androidx.room.withTransaction
 import com.example.igeniusandroidtest.data.source.local.Repository
 import com.example.igeniusandroidtest.data.source.local.RepositoryDatabase
@@ -14,8 +12,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class AuthUserReposRepositoryImpl @Inject constructor(
-    private val context: Context,
-    private val apiInterface: ApiInterface, private val db: RepositoryDatabase
+    private val apiInterface: ApiInterface,
+    private val db: RepositoryDatabase
 ) : AuthUserReposRepository {
 
     override suspend fun insertRepository(repository: Repository) {
@@ -37,19 +35,16 @@ class AuthUserReposRepositoryImpl @Inject constructor(
             query = { db.dao.getRepositories() },
             fetch = { apiInterface.getRepos() },
             saveFetchResult = { result ->
-                db.withTransaction {
-                    result.onSuccess { repos ->
+                result
+                    .onSuccess { repos ->
                         repositories.emit(repos)
-                        db.dao.deleteAllRepositories()
-                        db.dao.insertRepositories(repos)
-                    }.onError { code, message ->
-                        Toast.makeText(
-                            context,
-                            "Error code: $code, message: $message",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }.onException { Timber.e(it.message) }
-                }
+                        db.withTransaction {
+                            db.dao.deleteAllRepositories()
+                            db.dao.insertRepositories(repos)
+                        }
+                    }
+                    .onError { code, message -> Timber.e("Error code: $code, message: $message") }
+                    .onException { t -> Timber.e(t.message) }
             }
         )
     }
@@ -61,15 +56,15 @@ class AuthUserReposRepositoryImpl @Inject constructor(
     override suspend fun checkStarredRepository(
         ownerName: String,
         nameRepository: String
-    ): Response<Unit> {
+    ): Result<Int> {
         return apiInterface.checkStarredRepository(ownerName, nameRepository)
     }
 
-    override suspend fun starRepository(nameOwner: String, nameRepository: String): Response<Unit> {
+    override suspend fun starRepository(nameOwner: String, nameRepository: String): Result<Int> {
         return apiInterface.starRepository(nameOwner, nameRepository)
     }
 
-    override suspend fun unstarRepository(nameOwner: String, nameRepository: String): Response<Unit> {
+    override suspend fun unstarRepository(nameOwner: String, nameRepository: String): Result<Int> {
         return apiInterface.unstarRepository(nameOwner, nameRepository)
     }
 }

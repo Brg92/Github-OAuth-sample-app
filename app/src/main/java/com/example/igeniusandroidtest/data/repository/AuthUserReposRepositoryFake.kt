@@ -5,7 +5,6 @@ import com.example.igeniusandroidtest.utils.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import retrofit2.Response
 
 class AuthUserReposRepositoryFake : AuthUserReposRepository {
 
@@ -13,21 +12,21 @@ class AuthUserReposRepositoryFake : AuthUserReposRepository {
         SUCCESS, ERROR, EXCEPTION, LOADING
     }
 
-    enum class Result(val code: Int) {
-        SUCCESS_POSITIVE(204), SUCCESS_NEGATIVE(304), ERROR_REQ_AUTH(401), ERR_FORB(403), ERR_RES_NOT_FOUND(404)
+    enum class ResultFake(val code: Int) {
+        SUCCESS_POSITIVE(204), SUCCESS_NEGATIVE(304), ERR_FORB(403), ERR_RES_NOT_FOUND(404)
     }
 
     val repositoryItemsSourceRemote = mutableListOf<Repository>()
+    private var networkResult: NetworkResultFake = NetworkResultFake.SUCCESS
+    private var result = ResultFake.SUCCESS_POSITIVE
     private val repositoryItemsSourceDatabase = mutableListOf<Repository>()
     private val asyncRepositoryItemsDb: Flow<List<Repository>> = MutableStateFlow(repositoryItemsSourceDatabase)
-    private var networkResult: NetworkResultFake = NetworkResultFake.SUCCESS
-    private var result = Result.SUCCESS_POSITIVE
 
     fun setReturnNetworkResult(value: NetworkResultFake) {
         networkResult = value
     }
 
-    fun setReturnResponseCode(value: Result) {
+    fun setReturnResponseCodeResult(value: ResultFake) {
         result = value
     }
 
@@ -41,15 +40,22 @@ class AuthUserReposRepositoryFake : AuthUserReposRepository {
         }
     }
 
-    private suspend fun networkApiFakeReturnResponse(): Response<Unit> {
+    private suspend fun networkApiFakeReturnResponse(
+        ownerName: String,
+        nameRepository: String,
+        swap: Boolean? = null
+    ): Result<Int> {
+        val repo = repositories.value.find { it.name == nameRepository && it.owner?.login == ownerName }
+        if (swap == true) return Result.success(ResultFake.SUCCESS_POSITIVE.code)
         delay(1000)
-        return when (result) {
-            Result.SUCCESS_POSITIVE -> Response.success(result.code, Unit)
-            Result.SUCCESS_NEGATIVE -> Response.success(result.code, Unit)
-            Result.ERROR_REQ_AUTH -> Response.success(result.code, Unit)
-            Result.ERR_FORB -> Response.success(result.code, Unit)
-            Result.ERR_RES_NOT_FOUND -> Response.success(result.code, Unit)
-        }
+        return repo?.let {
+            when (result) {
+                ResultFake.SUCCESS_POSITIVE -> Result.success(result.code)
+                ResultFake.SUCCESS_NEGATIVE -> Result.success(result.code)
+                ResultFake.ERR_FORB -> Result.success(result.code)
+                ResultFake.ERR_RES_NOT_FOUND -> Result.success(result.code)
+            }
+        } ?: Result.success(401)
     }
 
     override val repositories: MutableStateFlow<List<Repository>> = MutableStateFlow(emptyList())
@@ -90,15 +96,15 @@ class AuthUserReposRepositoryFake : AuthUserReposRepository {
     override suspend fun checkStarredRepository(
         ownerName: String,
         nameRepository: String
-    ): Response<Unit> {
-        return networkApiFakeReturnResponse()
+    ): Result<Int> {
+        return networkApiFakeReturnResponse(ownerName, nameRepository)
     }
 
-    override suspend fun starRepository(ownerName: String, nameRepository: String): Response<Unit> {
-        return networkApiFakeReturnResponse()
+    override suspend fun starRepository(ownerName: String, nameRepository: String): Result<Int> {
+        return networkApiFakeReturnResponse(ownerName, nameRepository, true)
     }
 
-    override suspend fun unstarRepository(ownerName: String, nameRepository: String): Response<Unit> {
-        return networkApiFakeReturnResponse()
+    override suspend fun unstarRepository(ownerName: String, nameRepository: String): Result<Int> {
+        return networkApiFakeReturnResponse(ownerName, nameRepository)
     }
 }

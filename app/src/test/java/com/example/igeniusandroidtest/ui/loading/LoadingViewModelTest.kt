@@ -6,7 +6,6 @@ import com.example.igeniusandroidtest.MainDispatcherTestRule
 import com.example.igeniusandroidtest.data.repository.AuthUserReposRepositoryFake
 import com.example.igeniusandroidtest.data.source.local.Repository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
@@ -16,9 +15,14 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoadingViewModelTest {
 
+    // Executes each task synchronously using Architecture Components.
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
+    /*
+     * Rule for setting the main Dispatcher in order to test viewModel coroutines launched in viewModelScope over
+     * the Ui(Main) thread which is by default running on Android device and no available here.
+     * */
     @get:Rule
     var mainDispatcherTestRule = MainDispatcherTestRule()
 
@@ -45,17 +49,4 @@ class LoadingViewModelTest {
                 Assert.assertEquals(repositoryItems, awaitItem())
             }
         }
-
-    @Test
-    fun `when getRepositories failed then return error message`() = runTest {
-        authUserReposRepositoryFake.setReturnNetworkResult(AuthUserReposRepositoryFake.NetworkResultFake.ERROR)
-        val expected = "error code: -1, message: Generic Error Api"
-
-        viewModel.getRepositories()
-
-        advanceTimeBy(1000)
-        viewModel.onErrorEvent.test {
-            Assert.assertEquals(expected, awaitEvent())
-        }
-    }
 }

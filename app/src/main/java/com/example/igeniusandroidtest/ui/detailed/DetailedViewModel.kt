@@ -15,18 +15,18 @@ class DetailedViewModel @Inject constructor(
 
     private val _isStarred = MutableLiveData<Boolean>()
     val isStarred: LiveData<Boolean> = _isStarred
-    val repository = savedStateHandle.getLiveData<Int>("query_get_repository_by_id").switchMap { id ->
+    val repository = savedStateHandle.getLiveData<Int>("query").switchMap { id ->
         authUserReposRepository.repositories.asLiveData()
             .map { repositories -> repositories.find { repository -> repository.id == id } }
     }
 
     fun setQuery(id: Int) {
-        savedStateHandle["query_get_repository_by_id"] = id
+        savedStateHandle["query"] = id
     }
 
     fun checkStarredRepository(userName: String, repositoryName: String) {
         viewModelScope.launch {
-            val code = authUserReposRepository.checkStarredRepository(userName, repositoryName).code()
+            val code = authUserReposRepository.checkStarredRepository(userName, repositoryName).getOrDefault(-1)
             NetworkResultSuccessHelper(code) { isSuccess -> _isStarred.value = isSuccess }()
         }
     }
@@ -39,14 +39,14 @@ class DetailedViewModel @Inject constructor(
 
     private fun starApi(userName: String, repositoryName: String) {
         viewModelScope.launch {
-            val code = authUserReposRepository.starRepository(userName, repositoryName).code()
+            val code = authUserReposRepository.starRepository(userName, repositoryName).getOrDefault(-1)
             NetworkResultSuccessHelper(code) { isSuccess -> _isStarred.value = isSuccess }()
         }
     }
 
     private fun unstarApi(userName: String, repositoryName: String) {
         viewModelScope.launch {
-            val code = authUserReposRepository.unstarRepository(userName, repositoryName).code()
+            val code = authUserReposRepository.unstarRepository(userName, repositoryName).getOrDefault(-1)
             NetworkResultSuccessHelper(code) { isSuccess -> _isStarred.value = !isSuccess }()
         }
     }
