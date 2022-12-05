@@ -8,11 +8,9 @@ import retrofit2.http.*
 
 interface ApiInterface {
 
-    @Headers("Accept: application/vnd.github+json")
     @GET("/user")
     suspend fun getUser(): NetworkResult<AuthUser>
 
-    @Headers("Accept: application/vnd.github+json")
     @GET("/user/repos")
     suspend fun getRepos(): NetworkResult<List<Repository>>
 
