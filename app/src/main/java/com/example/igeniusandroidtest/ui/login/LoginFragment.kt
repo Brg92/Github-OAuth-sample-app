@@ -94,9 +94,7 @@ class LoginFragment : Fragment() {
                     return true
                 }
                 val code = uri.getQueryParameter("code")
-                code?.let {
-                    viewModel.getAccessToken(BuildConfig.CLIENT_ID, BuildConfig.CLIENT_SECRET, it)
-                }
+                code?.let { viewModel.getAccessToken(BuildConfig.CLIENT_ID, BuildConfig.CLIENT_SECRET, it) }
                 true
             } else {
                 super.shouldOverrideUrlLoading(view, request)

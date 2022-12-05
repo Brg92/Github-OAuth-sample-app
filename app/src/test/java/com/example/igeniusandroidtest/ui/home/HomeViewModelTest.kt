@@ -36,9 +36,7 @@ class HomeViewModelTest {
     @Test
     fun `given a preload list of repositories then produceHomeUiState emit repositories with success`() =
         runTest {
-            repositoryItems.onEach { repository ->
-                authUserReposRepositoryFake.repositoryItemsSourceRemote.add(repository)
-            }
+            repositoryItems.onEach { repository -> authUserReposRepositoryFake.repositoryItemsSourceRemote.add(repository) }
             authUserReposRepositoryFake.repositories.emit(repositoryItems)
 
             advanceTimeBy(1)
@@ -48,9 +46,7 @@ class HomeViewModelTest {
     @Test
     fun `given a preload list of repositories different from the expected then produceHomeUiState emit the expected with success`() =
         runTest {
-            repositoryItems.onEach { repository ->
-                authUserReposRepositoryFake.repositoryItemsSourceRemote.add(repository)
-            }
+            repositoryItems.onEach { repository -> authUserReposRepositoryFake.repositoryItemsSourceRemote.add(repository) }
             authUserReposRepositoryFake.repositories.emit(repositoryItems)
             val unexpected =
                 mutableListOf(
@@ -70,9 +66,7 @@ class HomeViewModelTest {
     fun `given a list of empty repositories when fetchRepositories then produceHomeUiState emit repositories with success`() =
         runTest {
             // load items to the db.
-            repositoryItems.onEach { repository ->
-                authUserReposRepositoryFake.insertRepository(repository)
-            }
+            repositoryItems.onEach { repository -> authUserReposRepositoryFake.insertRepository(repository) }
             // offline mode the api return exception
             authUserReposRepositoryFake.setReturnNetworkResult(AuthUserReposRepositoryFake.NetworkResultFake.EXCEPTION)
             // load repositories from cache
@@ -86,4 +80,24 @@ class HomeViewModelTest {
             advanceTimeBy(3001)
             Assert.assertEquals(repositoryItems, viewModel.produceHomeUiState.value.cards)
         }
+
+    @Test
+    fun `give a list of empty repositories when fetchRepositories then produceHomeUiState update isEmptyState to true`() = runTest{
+        authUserReposRepositoryFake.repositoryItemsSourceRemote.clear()
+        authUserReposRepositoryFake.setReturnNetworkResult(AuthUserReposRepositoryFake.NetworkResultFake.EXCEPTION)
+
+        authUserReposRepositoryFake.getRepositories()
+
+        advanceTimeBy(3001)
+        Assert.assertEquals(true, viewModel.produceHomeUiState.value.isEmptyState)
+    }
+
+    @Test
+    fun `give a list of repositories when fetchRepositories then produceHomeUiState update isEmptyState to false`() = runTest{
+        repositoryItems.onEach { repository -> authUserReposRepositoryFake.repositoryItemsSourceRemote.add(repository) }
+        authUserReposRepositoryFake.repositories.emit(repositoryItems)
+
+        advanceTimeBy(1)
+        Assert.assertEquals(false, viewModel.produceHomeUiState.value.isEmptyState)
+    }
 }

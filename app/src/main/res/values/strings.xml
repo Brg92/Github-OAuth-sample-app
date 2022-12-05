@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">IGenius Android Test</string>
 
+    <!-- Home -->
+    <string name="empty_state">No repositories are available</string>
+
     <!-- Detailed screen -->
     <string name="name_label">Title</string>
     <string name="descritption_label">Description</string>

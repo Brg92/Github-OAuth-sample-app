@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.igeniusandroidtest.data.repository.AuthUserReposRepository
 import com.example.igeniusandroidtest.data.source.local.Repository
-import com.example.igeniusandroidtest.utils.onError
 import com.example.igeniusandroidtest.utils.onLoading
 import com.example.igeniusandroidtest.utils.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +14,8 @@ import javax.inject.Inject
 data class HomeUiState(
     val cards: List<Repository> = emptyList(),
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val isEmptyState: Boolean = false
 )
 
 @HiltViewModel
@@ -51,7 +51,8 @@ class HomeViewModel @Inject constructor(private val authUserReposRepository: Aut
                         _produceHomeUiState.update {
                             it.copy(
                                 cards = repos,
-                                isLoading = false
+                                isLoading = false,
+                                isEmptyState = repos.isEmpty()
                             )
                         }
                     }
