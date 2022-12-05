@@ -29,7 +29,6 @@ class LoadingViewModel @Inject constructor(private val authUserReposRepository: 
             delay(1000)
             authUserReposRepository.getRepositories().collect { networkResult ->
                 networkResult.onSuccess { repositories -> _onSuccessEvent.send(repositories) }
-                networkResult.onError { code, message -> _onErrorEvent.send("error code: $code, message: $message") }
             }
         }
     }

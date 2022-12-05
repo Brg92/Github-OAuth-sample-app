@@ -37,7 +37,6 @@ class LoadingFragment : Fragment() {
 
         animateLogo()
         consumeApiSuccessEvent()
-        consumeApiErrorEvent()
     }
 
     override fun onDestroyView() {
@@ -75,13 +74,4 @@ class LoadingFragment : Fragment() {
 
     private fun consumeApiSuccessEvent() =
         lifecycleScope.launch { viewModel.onSuccessEvent.collect { findNavController().navigate(R.id.homeFragment) } }
-
-    private fun consumeApiErrorEvent() =
-        lifecycleScope.launch {
-            viewModel.onErrorEvent.collect { msg ->
-                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-                delay(1000L)
-                findNavController().navigate(R.id.homeFragment)
-            }
-        }
 }

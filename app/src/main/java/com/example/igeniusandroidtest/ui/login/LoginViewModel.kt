@@ -43,7 +43,7 @@ class LoginViewModel @Inject constructor(
                     }
                     _onSuccessEvent.emit(Unit)
                 }
-                .onError { code, message -> _onFailureEvent.emit(message) }
+                .onError { code, message -> _onFailureEvent.emit("Error $message, code: $code") }
                 .onException { Timber.d("exception ${it.message}") }
         }
     }

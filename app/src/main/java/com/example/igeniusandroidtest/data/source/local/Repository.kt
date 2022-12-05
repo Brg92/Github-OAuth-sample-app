@@ -36,7 +36,8 @@ data class Repository(
     var private: Boolean?,
     @Json(name = "subscribers_count")
     var subscribersCount: Int?,
-    @PrimaryKey var id: Int?,
+    @PrimaryKey
+    var id: Int?,
 ) {
     constructor() : this(
         createdAt = null,
