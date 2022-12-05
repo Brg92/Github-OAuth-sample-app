@@ -6,7 +6,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import app.cash.turbine.test
-import com.example.igeniusandroidtest.MainDispatcherTestRule
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -20,9 +19,6 @@ class RepositoryDaoTest {
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
-
-    @get:Rule
-    var mainDispatcherTestRule = MainDispatcherTestRule()
 
     private lateinit var database: RepositoryDatabase
     private lateinit var dao: RepositoryDao
